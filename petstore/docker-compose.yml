@@ -1,0 +1,23 @@
+version: "2"
+
+services:
+  redis:
+    image: kumarsarath588/k8petstore-redis-master:r.1.0.1
+    networks:
+      - back
+  web:
+    image: kumarsarath588/k8petstore-webserver:r.1.0.1
+    environment:
+      - REDISMASTER_SERVICE_HOST=redis
+      - REDISMASTER_SERVICE_PORT=6379
+    networks:
+      - front
+      - back
+    ports:
+      - 3000:3000
+
+networks:
+  front:
+    driver: overlay
+  back:
+    driver: overlay
