@@ -1,0 +1,13 @@
+version: "2"
+services:
+  owncloud9: 
+    image: adimania/owncloud9-centos7
+    ports: 
+      - 80:80
+    links:
+      - mysql
+  mysql: 
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=owncloud
+      - MYSQL_DATABASE=owncloud

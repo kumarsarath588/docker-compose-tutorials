@@ -1,23 +1,42 @@
 version: "2"
 
 services:
-  redis:
-    image: kumarsarath588/k8petstore-redis-master:r.1.0.1
-    networks:
-      - back
   web:
     image: kumarsarath588/k8petstore-webserver:r.1.0.1
     environment:
       - REDISMASTER_SERVICE_HOST=redis
       - REDISMASTER_SERVICE_PORT=6379
     networks:
-      - front
-      - back
+      - perstore_front
+      - perstore_back
+#    ports:
+#      - 80:3000
+    depends_on:
+      - redis
+  redis:
+    image: kumarsarath588/k8petstore-redis-master:r.1.0.1
+    networks:
+      - perstore_back
+  lb:
+    depends_on:
+      - web
+    image: dockercloud/haproxy
+    links:
+      - web
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
-      - 3000:3000
+      - 80:80
+    networks:
+      - perstore_front
+    
 
 networks:
-  front:
+  perstore_front:
     driver: overlay
-  back:
+    driver_opts:
+      subnet: "10.0.11.0/24"
+  perstore_back:
     driver: overlay
+    driver_opts:
+      subnet: "10.0.12.0/24"
