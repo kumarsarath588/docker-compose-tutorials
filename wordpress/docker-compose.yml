@@ -40,5 +40,6 @@ volumes:
 networks:
   wordpress_back:
     driver: overlay
-    driver_opts:
-      subnet: "10.0.10.0/24"
+    ipam:
+      config:
+        - subnet: "172.31.0.0/24"
